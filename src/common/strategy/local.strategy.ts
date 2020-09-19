@@ -14,7 +14,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     // Specify different property name instead default property
     super({ usernameField: 'email', passwordField: 'password' });
   }
-
   async validate(email: string, password: string): Promise<any> {
     const user = await this.authService.validateUser(email, password);
     if (!user) {

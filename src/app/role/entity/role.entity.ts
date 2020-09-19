@@ -1,31 +1,37 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToMany,
-  JoinTable,
-  Check,
-} from 'typeorm';
-import { Permission } from './../../permission/entity/permission.entity';
+import { GroupRoleEntity } from './../../group/entity/group-role.entity';
+import { UserPermissionRoleEntity } from './../../user/entity/user-permission-role.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { RolePermissionEntity } from './role-permission.entity';
 
-@Entity()
-export class Role {
-  @PrimaryGeneratedColumn()
-  id: number;
+@Entity({ name: 'roles' })
+export class RoleEntity {
+    @PrimaryGeneratedColumn()
+    role_id: number;
 
-  @Column()
-  name: string;
+    @Column()
+    role_name: string;
 
-  /**
-   * priority: 1 <= ADMIN = 50 <= 100, 101 <= MOD = 150 <= 200, 201 <= USER = 250 <= 300
-   */
-  @Column()
-  priority: number;
+    @Column()
+    role_code: string;
 
-  @ManyToMany(type => Permission)
-  @JoinTable({ name: 'role_permissions' })
-  permissions: Permission[];
+    @Column()
+    role_description: string;
 
-  @Column({ nullable: true })
-  description: string;
+    @OneToMany(
+        type => GroupRoleEntity,
+        groupRole => groupRole.role,
+    )
+    groupRoles: GroupRoleEntity[];
+
+    @OneToMany(
+        type => UserPermissionRoleEntity,
+        userPermissionRole => userPermissionRole.role,
+    )
+    userPermissionRoles: UserPermissionRoleEntity[];
+
+    @OneToMany(
+        type => RolePermissionEntity,
+        rolePermissions => rolePermissions.role,
+    )
+    rolePermissions: RolePermissionEntity[];
 }

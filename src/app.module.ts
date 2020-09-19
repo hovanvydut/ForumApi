@@ -1,33 +1,31 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from './app/user/user.module';
-import { RoleModule } from './app/role/role.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
-import { SharedModule } from './shared/shared.module';
-import configuration from './config/configuration';
-import { MyConfigService } from './shared/service/my-config.service';
-import { PermissionModule } from './app/permission/permission.module';
-import { MethodModule } from './app/method/method.module';
-import { ModuleModule } from './app/module/module.module';
 import { AuthModule } from './app/auth/auth.module';
+import { Config } from 'src/config/configuration';
+import { IdeaModule } from './app/idea/idea.module';
+import { CommentModule } from './app/comment/comment.module';
+import { VoteModule } from './app/vote/vote.module';
+import { MediaModule } from './app/media/media.module';
+import { LabelModule } from './app/label/label.module';
+import { PermissionModule } from './app/permission/permission.module';
+import { RoleModule } from './app/role/role.module';
+import { GroupModule } from './app/group/group.module';
+import { UserModule } from './app/user/user.module';
 @Module({
-  imports: [
-    ConfigModule.forRoot({ load: [configuration], isGlobal: true }),
-    TypeOrmModule.forRootAsync({
-      imports: [SharedModule],
-      inject: [MyConfigService],
-      useFactory: (myConfigService: MyConfigService) =>
-        myConfigService.getTypeOrmConfig(),
-    }),
-    UserModule,
-    RoleModule,
-    SharedModule,
-    PermissionModule,
-    MethodModule,
-    ModuleModule,
-    AuthModule,
-  ],
-  controllers: [],
-  providers: [],
+    imports: [
+        TypeOrmModule.forRoot(Config.getInstance().getTypeormConfig()),
+        UserModule,
+        AuthModule,
+        IdeaModule,
+        CommentModule,
+        VoteModule,
+        MediaModule,
+        LabelModule,
+        PermissionModule,
+        RoleModule,
+        GroupModule,
+    ],
+    controllers: [],
+    providers: [],
 })
 export class AppModule {}

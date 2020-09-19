@@ -1,5 +1,5 @@
-import { EntityRepository, Repository, FindConditions } from 'typeorm';
-import { User } from '../entity/user.entity';
+import { EntityRepository, Repository } from 'typeorm';
+import { UserEntity } from '../entity/user.entity';
 
-@EntityRepository(User)
-export class UserRepository extends Repository<User> {}
+@EntityRepository(UserEntity)
+export class UserRepository extends Repository<UserEntity> {}

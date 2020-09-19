@@ -1,5 +1,5 @@
 /**
- * This file is only used for seeding purpose
+ * This file is only used for seeding & migration purpose
  */
 module.exports = {
   type: process.env.DB_TYPE,
@@ -11,7 +11,7 @@ module.exports = {
   migrations: ['src/database/migrations/*{.ts,.js}'],
   entities: ['src/**/*.entity{.ts,.js}'],
   factories: ['src/database/seeders-dev/factories/factory/*.factory{.ts,.js}'],
-  seeds: ['src/database/seeders-dev/seeder/*.seed{.ts,.js}'],
+  seeds: ['src/database/seeders-dev/seeding/*.seed{.ts,.js}'],
   cli: {
     migrationsDir: 'src/database/migrations',
   },

@@ -1,3 +1,3 @@
-interface IToken {
+interface IAuthToken {
   access_token: string;
 }

@@ -1,12 +1,21 @@
 import * as bcrypt from 'bcrypt';
 import { IBcryptConfig } from 'src/common/interfaces/bcrypt-config.interface';
-import config from 'src/config/configuration';
+import { Config } from 'src/config/configuration';
 
 export class BcryptUtil {
   private readonly config;
+  private static instance;
 
-  constructor() {
-    this.config = config();
+  private constructor() {
+    this.config = Config.getInstance();
+  }
+
+  public static getInstance(): BcryptUtil {
+    if (!BcryptUtil.instance) {
+      BcryptUtil.instance = new BcryptUtil();
+    }
+
+    return BcryptUtil.instance;
   }
 
   /**
@@ -15,7 +24,7 @@ export class BcryptUtil {
    * @returns {string}
    */
   public generateHash(password: string): string {
-    const bcryptConfig = this.configService.get<IBcryptConfig>('bcrypt');
+    const bcryptConfig = this.config.getBcryptConfig();
     return bcrypt.hashSync(password, bcryptConfig.saltRound);
   }
 

@@ -1,18 +1,34 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
-import { Method } from './../../method/entity/method.entity';
-import { Module } from './../../module/entity/module.entity';
+import { GroupRoleEntity } from './../../group/entity/group-role.entity';
+import { RolePermissionEntity } from './../../role/entity/role-permission.entity';
+import { UserPermissionRoleEntity } from './../../user/entity/user-permission-role.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
-@Entity()
-export class Permission {
-  @PrimaryGeneratedColumn()
-  id: number;
+@Entity({ name: 'permissions' })
+export class PermissionEntity {
+    @PrimaryGeneratedColumn()
+    permission_id: number;
 
-  @Column()
-  name: string;
+    @Column()
+    permission_code: string;
 
-  @ManyToOne(type => Method)
-  method: Method;
+    @Column()
+    permission_description: string;
 
-  @ManyToOne(type => Module)
-  module: Module;
+    @OneToMany(
+        type => RolePermissionEntity,
+        rolePermission => rolePermission.permission,
+    )
+    rolePermissions: RolePermissionEntity[];
+
+    @OneToMany(
+        type => UserPermissionRoleEntity,
+        userPermissionRole => userPermissionRole.permission,
+    )
+    userPermissionRoles: UserPermissionRoleEntity[];
+
+    @OneToMany(
+        type => GroupRoleEntity,
+        groupRole => groupRole.permission,
+    )
+    groupRoles: GroupRoleEntity[];
 }
