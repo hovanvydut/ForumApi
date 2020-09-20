@@ -2,6 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { Config } from 'src/config/configuration';
+import { IPayloadToken } from '../interfaces/payload-token.interface';
 
 /***
  * Configure a strategy by providing two things:
@@ -23,10 +24,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * 2. invokes validate() method passing the decoded JSON as its single parameter
    * Based on the way JWT signing works, we're guaranteed that we're receiving a valid token that we have previously signed and issued to a valid user.
    */
-  async validate(payload: any): Promise<IReqUser> {
-    const { sub, email, name } = payload;
+  async validate(payload: IPayloadToken): Promise<IReqUser> {
+    const { sub, email, fullname } = payload;
 
-    // Creating the user property on the Request object
-    return { id: sub, email, name };
+    // Creating the user property on the Request object: request.user
+    return { user_id: sub, email, fullname };
   }
 }

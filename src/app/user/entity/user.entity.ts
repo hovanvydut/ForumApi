@@ -1,4 +1,3 @@
-import { BcryptUtil } from 'src/shared/bcrypt.util';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,8 +6,6 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   OneToMany,
-  BeforeInsert,
-  BeforeUpdate,
 } from 'typeorm';
 import { UserGroupEntity } from './user-group.entity';
 import { UserPermissionRoleEntity } from './user-permission-role.entity';
@@ -16,7 +13,7 @@ import { UserPermissionRoleEntity } from './user-permission-role.entity';
 @Entity({ name: 'users' })
 export class UserEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  user_id: number;
 
   @Column()
   fullname: string;
@@ -30,6 +27,7 @@ export class UserEntity {
   @OneToMany(
     type => UserGroupEntity,
     userGroup => userGroup.user,
+    { cascade: true },
   )
   userGroups: UserGroupEntity[];
 
@@ -47,11 +45,4 @@ export class UserEntity {
 
   @DeleteDateColumn()
   deletedAt: Date;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  hashPassword() {
-    const bcryptUtil = BcryptUtil.getInstance();
-    this.password = bcryptUtil.generateHash(this.password);
-  }
 }

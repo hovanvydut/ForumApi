@@ -2,6 +2,7 @@ import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../../app/auth/service/auth.service';
+import { UserEntity } from 'src/app/user/entity/user.entity';
 
 /***
  * Configure a strategy by providing two things:
@@ -19,6 +20,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       throw new UnauthorizedException();
     }
+
     // Creating the user property on the Request object
     return user;
   }

@@ -21,7 +21,7 @@ export class UserGroupService {
 
   async assignUserOfGroup(userId: number, groupCode: string) {
     const group = await this.groupService.findOne({ group_code: groupCode });
-    const user = await this.userService.findOne({ id: userId });
+    const user = await this.userService.findOne({ user_id: userId });
     if (!group)
       throw new NotFoundException({ message: GroupErrorMsg.GROUP_NOT_FOUND });
     return this.userGroupRepo.insert({ group, user });

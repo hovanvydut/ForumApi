@@ -10,6 +10,6 @@ export class AuthController {
   @Post('/login')
   async login(@Req() req): Promise<IAuthToken> {
     // jwt sign token when user login successfully
-    return this.authService.login(req.user);
+    return this.authService.login(req.user as IReqUser);
   }
 }

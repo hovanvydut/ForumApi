@@ -5,6 +5,7 @@ export enum RoleErrorMsg {
 
 export enum UserErrorMsg {
   EMAIL_EXIST = 'Email already exists',
+  USER_NOT_FOUND = 'User not found',
 }
 
 export enum GroupErrorMsg {

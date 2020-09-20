@@ -1,5 +1,5 @@
 interface IReqUser {
-  id: number;
+  user_id: number;
   email: string;
-  name: string;
+  fullname: string;
 }

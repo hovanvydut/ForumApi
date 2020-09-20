@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { UserService } from 'src/app/user/service/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { BcryptUtil } from 'src/shared/bcrypt.util';
+import { UserEntity } from 'src/app/user/entity/user.entity';
+import { IPayloadToken } from 'src/common/interfaces/payload-token.interface';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +21,6 @@ export class AuthService {
    */
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.userService.findOne({ email });
-    console.log(this.bcryptUtil.generateHash('123123'));
     if (user && this.bcryptUtil.compare(password, user.password)) {
       const { password, ...result } = user;
       return result;
@@ -30,8 +31,14 @@ export class AuthService {
   /**
    * Generate JWT from a subset of the user object properties
    */
-  async login(user: any): Promise<IAuthToken> {
-    const payload = { sub: user.id, email: user.email, name: user.name };
+  async login(reqUser: IReqUser): Promise<IAuthToken> {
+    const payload: IPayloadToken = {
+      sub: reqUser.user_id,
+      email: reqUser.email,
+      fullname: reqUser.fullname,
+    };
+
+    // return token to client
     return {
       access_token: this.jwtService.sign(payload),
     };
