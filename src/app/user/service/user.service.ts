@@ -26,16 +26,25 @@ export class UserService {
     return this.userRepo.findOne(conditions);
   }
 
+  getAllUser(): Promise<UserEntity[]> {
+    return this.userRepo
+      .createQueryBuilder('user')
+      .select(['user_id', 'fullname', 'email'])
+      .where('1 = 1')
+      .execute();
+  }
+
+  softRemoveUser(userId: number) {
+    return this.userRepo.softRemove({ user_id: userId });
+  }
+
   async createNewUser(createUserDto: CreateUserDto) {
     if (await this.findOne({ email: createUserDto.email }))
       throw new ConflictException({ message: UserErrorMsg.EMAIL_EXIST });
-
     createUserDto.password = this.bcryptUtil.generateHash(
       createUserDto.password,
     );
-
     const result = await this.userRepo.insert(createUserDto);
-
     if (result.identifiers.length > 0)
       await this.userGroupService.assignUserOfGroup(
         result.identifiers[0].user_id,
@@ -46,36 +55,9 @@ export class UserService {
 
   async getAllPermission(userId: number): Promise<IReturnedPermission[]> {
     const user = await this.findOne({ user_id: userId });
-
     if (!user)
       throw new ConflictException({ message: UserErrorMsg.USER_NOT_FOUND });
-
-    return this.userRepo
-      .createQueryBuilder('user')
-      .select('permissions.permission_code as permission_code_1')
-      .addSelect('role_permissions.is_active as is_active_1')
-      .addSelect('permission_2.permission_code as permission_code_2')
-      .addSelect('group_roles.is_active as is_active_2')
-      .leftJoin('user.userGroups', 'user_groups')
-      .leftJoin('user_groups.group', 'groups')
-      .leftJoin('groups.groupRoles', 'group_roles')
-      .leftJoin('group_roles.role', 'roles')
-      .leftJoin('roles.rolePermissions', 'role_permissions')
-      .leftJoin(
-        'role_permissions.permission',
-        'permissions',
-        // 'role_permissions.is_active = :YES',
-        // { YES: isActiveList.YES },
-      )
-      .leftJoin(
-        'permissions',
-        'permission_2', // alias of permission table
-        'group_roles.permission_id = permission_2.permission_id',
-        // 'group_roles.is_active = :YES AND group_roles.permission IS NOT NULL AND permission_2.permission_id = group_roles.permission_id ',
-        // { YES: isActiveList.YES },
-      )
-      .where('user.user_id = :userId', { userId })
-      .getRawMany();
+    return this.userRepo.getAllPermissions(userId);
   }
 }
 

@@ -1,5 +1,5 @@
-import { PermissionEntity } from './../../permission/entity/permission.entity';
-import { RoleEntity } from './../../role/entity/role.entity';
+import { PermissionEntity } from '../../permission/entity/permission.entity';
+import { RoleEntity } from '../../role/entity/role.entity';
 import {
   Check,
   Column,
@@ -13,14 +13,14 @@ import { UserEntity } from './user.entity';
 @Check(
   '(role_id is NULL AND permission_id is NOT NULL) OR (role_id is NOT NULL AND permission_id is NULL)',
 )
-@Entity({ name: 'user_permission_roles' })
-export class UserPermissionRoleEntity {
+@Entity({ name: 'user_permissions' })
+export class UserPermissionEntity {
   @PrimaryGeneratedColumn()
-  user_permission_role_id: number;
+  user_permission_id: number;
 
   @ManyToOne(
     type => UserEntity,
-    user => user.userPermissionRoles,
+    user => user.userPermissions,
   )
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;

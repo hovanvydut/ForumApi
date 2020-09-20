@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { RoleService } from 'src/app/role/service/role.service';
 import { RoleErrorMsg } from 'src/common/enums/error-message.enum';
-import { UserPermissionRoleRepository } from '../repository/user-permission-role.repository';
+import { UserPermissionRepository } from '../repository/user-permission.repository';
 
 @Injectable()
-export class UserPermissionRoleService {
+export class UserPermissionService {
   constructor(
-    private readonly userPerRoleRepo: UserPermissionRoleRepository,
+    private readonly userPerRoleRepo: UserPermissionRepository,
     private readonly roleService: RoleService,
   ) {}
 

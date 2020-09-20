@@ -8,7 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { UserGroupEntity } from './user-group.entity';
-import { UserPermissionRoleEntity } from './user-permission-role.entity';
+import { UserPermissionEntity } from './user-permission.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -32,10 +32,10 @@ export class UserEntity {
   userGroups: UserGroupEntity[];
 
   @OneToMany(
-    type => UserPermissionRoleEntity,
-    userPermissionRole => userPermissionRole.user,
+    type => UserPermissionEntity,
+    userPermissions => userPermissions.user,
   )
-  userPermissionRoles: UserPermissionRoleEntity[];
+  userPermissions: UserPermissionEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

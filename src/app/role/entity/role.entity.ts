@@ -1,5 +1,5 @@
 import { GroupRoleEntity } from './../../group/entity/group-role.entity';
-import { UserPermissionRoleEntity } from './../../user/entity/user-permission-role.entity';
+import { UserPermissionEntity } from '../../user/entity/user-permission.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { RolePermissionEntity } from './role-permission.entity';
 
@@ -24,10 +24,10 @@ export class RoleEntity {
   groupRoles: GroupRoleEntity[];
 
   @OneToMany(
-    type => UserPermissionRoleEntity,
+    type => UserPermissionEntity,
     userPermissionRole => userPermissionRole.role,
   )
-  userPermissionRoles: UserPermissionRoleEntity[];
+  userPermissionRoles: UserPermissionEntity[];
 
   @OneToMany(
     type => RolePermissionEntity,
