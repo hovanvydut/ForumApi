@@ -27,7 +27,6 @@ export class UserEntity {
   @OneToMany(
     type => UserGroupEntity,
     userGroup => userGroup.user,
-    { cascade: true },
   )
   userGroups: UserGroupEntity[];
 

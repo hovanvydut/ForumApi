@@ -13,9 +13,13 @@ export class UserGroupEntity {
   @PrimaryGeneratedColumn()
   user_group_id: number;
 
+  // FIXME why cascade: true is not working
   @ManyToOne(
     type => UserEntity,
     user => user.userGroups,
+    {
+      onDelete: 'CASCADE',
+    },
   )
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
@@ -26,7 +30,4 @@ export class UserGroupEntity {
   )
   @JoinColumn({ name: 'group_id' })
   group: GroupEntity;
-
-  // @Column({ default: 0 })
-  // group_leader: number;
 }

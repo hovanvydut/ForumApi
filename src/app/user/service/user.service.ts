@@ -27,10 +27,22 @@ export class UserService {
   }
 
   getAllUser(): Promise<UserEntity[]> {
+    return this.userRepo.find({ select: ['user_id', 'fullname', 'email'] });
+  }
+
+  getSpecifiedUser(userId: number): Promise<UserEntity> {
+    return this.userRepo.findOne(
+      { user_id: userId },
+      { select: ['user_id', 'fullname', 'email'] },
+    );
+  }
+
+  getSoftDeletedUser(): Promise<UserEntity[]> {
     return this.userRepo
       .createQueryBuilder('user')
       .select(['user_id', 'fullname', 'email'])
-      .where('1 = 1')
+      .where('user.deletedAt IS NOT NULL')
+      .withDeleted()
       .execute();
   }
 
@@ -41,10 +53,15 @@ export class UserService {
   async createNewUser(createUserDto: CreateUserDto) {
     if (await this.findOne({ email: createUserDto.email }))
       throw new ConflictException({ message: UserErrorMsg.EMAIL_EXIST });
+
+    // hash password before inserting
     createUserDto.password = this.bcryptUtil.generateHash(
       createUserDto.password,
     );
+
     const result = await this.userRepo.insert(createUserDto);
+
+    // if inserting success, assign default-group to user
     if (result.identifiers.length > 0)
       await this.userGroupService.assignUserOfGroup(
         result.identifiers[0].user_id,
@@ -58,6 +75,14 @@ export class UserService {
     if (!user)
       throw new ConflictException({ message: UserErrorMsg.USER_NOT_FOUND });
     return this.userRepo.getAllPermissions(userId);
+  }
+
+  restoreDeletedUser(userId: number) {
+    return this.userRepo.restore({ user_id: userId });
+  }
+
+  deleteUser(userId: number) {
+    return this.userRepo.delete(userId);
   }
 }
 
