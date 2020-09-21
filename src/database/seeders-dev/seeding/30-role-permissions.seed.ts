@@ -29,9 +29,26 @@ const rolePermissionsData = [
   },
 
   // Standard Admin
+  // permisison
+  {
+    role: role.getIdByCode(RoleList.ADMIN_STANDARD),
+    permission: perm.getIdByCode(PermissionList.read_permission_any),
+    is_active: 1,
+  },
+  {
+    role: role.getIdByCode(RoleList.ADMIN_STANDARD),
+    permission: perm.getIdByCode(PermissionList.create_permission),
+    is_active: 1,
+  },
   {
     role: role.getIdByCode(RoleList.ADMIN_STANDARD),
     permission: perm.getIdByCode(PermissionList.update_description_permission),
+    is_active: 1,
+  },
+  // role
+  {
+    role: role.getIdByCode(RoleList.ADMIN_STANDARD),
+    permission: perm.getIdByCode(PermissionList.read_role_any),
     is_active: 1,
   },
   {
@@ -56,22 +73,12 @@ const rolePermissionsData = [
   },
   {
     role: role.getIdByCode(RoleList.ADMIN_STANDARD),
-    permission: perm.getIdByCode(PermissionList.delete_group),
-    is_active: 1,
-  },
-  {
-    role: role.getIdByCode(RoleList.ADMIN_STANDARD),
-    permission: perm.getIdByCode(PermissionList.create_user_group),
+    permission: perm.getIdByCode(PermissionList.add_user_group),
     is_active: 1,
   },
   {
     role: role.getIdByCode(RoleList.ADMIN_STANDARD),
     permission: perm.getIdByCode(PermissionList.delete_user_group),
-    is_active: 1,
-  },
-  {
-    role: role.getIdByCode(RoleList.ADMIN_STANDARD),
-    permission: perm.getIdByCode(PermissionList.update_role_group),
     is_active: 1,
   },
   {
@@ -99,8 +106,18 @@ const rolePermissionsData = [
     permission: perm.getIdByCode(PermissionList.create_new_user),
     is_active: 1,
   },
+  {
+    role: role.getIdByCode(RoleList.ADMIN_STANDARD),
+    permission: perm.getIdByCode(PermissionList.read_user_any),
+    is_active: 1,
+  },
 
   // Standard Features
+  {
+    role: role.getIdByCode(RoleList.USER_STANDARD),
+    permission: perm.getIdByCode(PermissionList.read_user_own),
+    is_active: 1,
+  },
   {
     role: role.getIdByCode(RoleList.USER_STANDARD),
     permission: perm.getIdByCode(PermissionList.update_fullname_user_own),

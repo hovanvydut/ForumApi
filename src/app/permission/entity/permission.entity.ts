@@ -8,10 +8,10 @@ export class PermissionEntity {
   @PrimaryGeneratedColumn()
   permission_id: number;
 
-  @Column()
+  @Column({ unique: true })
   permission_code: string;
 
-  @Column()
+  @Column({ default: 'No Name' })
   permission_description: string;
 
   @OneToMany(

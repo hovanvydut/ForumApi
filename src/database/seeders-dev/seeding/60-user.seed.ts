@@ -6,10 +6,10 @@ export default class CreateUser implements Seeder {
     await connection
       .createQueryBuilder()
       .insert()
-      .into('groups')
+      .into('users')
       .values([
         {
-          fulllname: 'Super Admin',
+          fullname: 'Super Admin',
           email: 'superadmin@gmail.com',
           password:
             '$2b$10$PwSeJ5cBsjuH/L1lyhH.nO8K8D.RaGszkG8O8oq078vtNJ0fDMfgi',

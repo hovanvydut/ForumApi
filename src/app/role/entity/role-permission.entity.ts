@@ -1,5 +1,6 @@
 import { PermissionEntity } from './../../permission/entity/permission.entity';
 import {
+  Check,
   Column,
   Entity,
   JoinColumn,
@@ -8,6 +9,9 @@ import {
 } from 'typeorm';
 import { RoleEntity } from './role.entity';
 
+@Check(
+  '(role_id IS NULL AND permission_id IS NULL) OR (role_id IS NOT NULL AND permission_id IS NOT NULL)',
+)
 @Entity({ name: 'role_permissions' })
 export class RolePermissionEntity {
   @PrimaryGeneratedColumn()
@@ -23,6 +27,9 @@ export class RolePermissionEntity {
   @ManyToOne(
     type => RoleEntity,
     role => role.rolePermissions,
+    {
+      onDelete: 'CASCADE',
+    },
   )
   @JoinColumn({ name: 'role_id' })
   role: RoleEntity;

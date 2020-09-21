@@ -17,8 +17,8 @@ const repositories = [
 
 @Module({
   imports: [TypeOrmModule.forFeature(repositories), RoleModule, GroupModule],
+  controllers: [UserController],
   providers: [UserService, UserGroupService],
   exports: [UserService, UserGroupService],
-  controllers: [UserController],
 })
 export class UserModule {}

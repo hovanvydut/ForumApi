@@ -6,11 +6,12 @@ export default class CreateUserPermission implements Seeder {
     await connection
       .createQueryBuilder()
       .insert()
-      .into('groups')
+      .into('user_permissions')
       .values([
         {
           user_id: 1,
           permission_id: 1,
+          is_active: 1,
         },
       ])
       .execute();

@@ -17,18 +17,29 @@ import { UserService } from '../service/user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Auth(PermissionList.read_user_any)
   @Get()
-  getAllUser(@Param('id') userId: number): Promise<UserEntity[] | UserEntity> {
+  getAllUser(): Promise<UserEntity[] | UserEntity> {
     return this.userService.getAllUser();
   }
 
-  @Get(':id')
+  @Auth(PermissionList.read_user_any)
+  @Get('/:userId')
   getSpecifiedUser(
-    @Param('id') userId: number,
+    @Param('userId') userId: number,
   ): Promise<UserEntity[] | UserEntity> {
     return this.userService.getSpecifiedUser(userId);
   }
 
+  @Auth(PermissionList.read_user_any)
+  @Get('/:userId/groups')
+  getGroupsOfUser() {}
+
+  @Auth(PermissionList.read_user_any)
+  @Get('/:userId/groups/:groupId')
+  getSpecGroupOfUser() {}
+
+  @Auth(PermissionList.read_user_any)
   @Get('/deleted')
   getSoftDeletedUser(): Promise<UserEntity[]> {
     return this.userService.getSoftDeletedUser();
@@ -40,18 +51,21 @@ export class UserController {
     return this.userService.createNewUser(createUserDto);
   }
 
-  @Patch('/:id/restore')
-  restoreDeletedUser(@Param('id') userId: number) {
+  @Auth(PermissionList.restore_user)
+  @Patch('/:userId/restore')
+  restoreDeletedUser(@Param('userId') userId: number) {
     return this.userService.restoreDeletedUser(userId);
   }
 
-  @Patch('/:id/delete')
-  softRemoveUser(@Param('id') userId: number) {
+  @Auth(PermissionList.delete_user_soft)
+  @Patch('/:userId/soft-delete')
+  softRemoveUser(@Param('userId') userId: number) {
     return this.userService.softRemoveUser(userId);
   }
 
-  @Delete('/:id')
-  deleteUser(@Param('id') userId: number) {
+  @Auth(PermissionList.delete_user_permanently)
+  @Delete('/:userId')
+  deleteUser(@Param('userId') userId: number) {
     return this.userService.deleteUser(userId);
   }
 }

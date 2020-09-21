@@ -8,19 +8,19 @@ const group = GroupListClass.getInstance();
 const role = RoleListClass.getInstance();
 
 export default class CreateGroupRole implements Seeder {
-    public async run(factory: Factory, connection: Connection): Promise<any> {
-        await connection
-            .createQueryBuilder()
-            .insert()
-            .into('group_roles')
-            .values(groupRoleData)
-            .execute();
-    }
+  public async run(factory: Factory, connection: Connection): Promise<any> {
+    await connection
+      .createQueryBuilder()
+      .insert()
+      .into('group_roles')
+      .values(groupRoleData)
+      .execute();
+  }
 }
 
 const groupRoleData = [
-    {
-        group: group.getIdByCode(GroupList.REGISTERED_USERS),
-        role: role.getIdByCode(RoleList.USER_STANDARD),
-    },
+  {
+    group: group.getIdByCode(GroupList.REGISTERED_USERS),
+    role: role.getIdByCode(RoleList.USER_STANDARD),
+  },
 ];

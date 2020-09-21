@@ -7,12 +7,12 @@ const groupListInstance = GroupListClass.getInstance();
 const groupData = groupListInstance.exportSeedingData();
 
 export default class CreateGroup implements Seeder {
-    public async run(factory: Factory, connection: Connection): Promise<any> {
-        await connection
-            .createQueryBuilder()
-            .insert()
-            .into('groups')
-            .values(groupData)
-            .execute();
-    }
+  public async run(factory: Factory, connection: Connection): Promise<any> {
+    await connection
+      .createQueryBuilder()
+      .insert()
+      .into('groups')
+      .values(groupData)
+      .execute();
+  }
 }

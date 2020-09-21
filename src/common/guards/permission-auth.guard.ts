@@ -20,6 +20,8 @@ export class PermissionAuthGuard implements CanActivate {
       [context.getClass(), context.getHandler()],
     );
 
+    if (requiredPermissions.length == 0) return true;
+
     let isSuperAdmin = false;
     const request = context.switchToHttp().getRequest();
     const reqUser: IReqUser = request.user;

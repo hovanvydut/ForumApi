@@ -11,7 +11,7 @@ export class RoleEntity {
   @Column()
   role_name: string;
 
-  @Column()
+  @Column({ unique: true })
   role_code: string;
 
   @Column()
