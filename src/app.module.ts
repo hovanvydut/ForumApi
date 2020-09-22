@@ -11,6 +11,7 @@ import { PermissionModule } from './app/permission/permission.module';
 import { RoleModule } from './app/role/role.module';
 import { GroupModule } from './app/group/group.module';
 import { UserModule } from './app/user/user.module';
+import { TagModule } from './app/tag/tag.module';
 @Module({
     imports: [
         TypeOrmModule.forRoot(Config.getInstance().getTypeormConfig()),
@@ -24,6 +25,7 @@ import { UserModule } from './app/user/user.module';
         PermissionModule,
         RoleModule,
         GroupModule,
+        TagModule,
     ],
     controllers: [],
     providers: [],

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserGroupRepository } from 'src/app/user/repository/user-group.repository';
+import { CreateGroupDto } from 'src/common/dto/create-group.dto';
 import { FindConditions } from 'typeorm';
 import { GroupEntity } from '../entity/group.entity';
 import { GroupRoleRepository } from '../repository/group-role.repository';
@@ -10,8 +10,7 @@ export class GroupService {
   constructor(
     private readonly groupRepo: GroupRepository,
     private readonly groupRoleRepo: GroupRoleRepository,
-  ) // private readonly userGroupRepo: UserGroupRepository,
-  {}
+  ) {}
 
   findOne(conditions: FindConditions<GroupEntity>) {
     return this.groupRepo.findOne(conditions);
@@ -89,16 +88,31 @@ export class GroupService {
   }
 
   getUsersOfGroup(groupId: number) {
-    // return this.userGroupRepo
-    //   .createQueryBuilder('user_groups')
-    //   .select(['users.*'])
-    //   .innerJoin(
-    //     'user_groups.group',
-    //     'groups',
-    //     'user_groups.group_id = :groupId',
-    //     { groupId },
-    //   )
-    //   .innerJoin('user_groups.user', 'users')
-    //   .execute();
+    return this.groupRepo
+      .createQueryBuilder('groups')
+      .select(['users.*'])
+      .innerJoin('groups.userGroups', 'user_groups')
+      .innerJoin('user_groups.user', 'users')
+      .where('groups.group_id = :groupId', { groupId })
+      .execute();
   }
+
+  getSpecUserOfGroup(groupId: number, userId: number) {
+    return this.groupRepo
+      .createQueryBuilder('groups')
+      .select(['users.*'])
+      .innerJoin('groups.userGroups', 'user_groups')
+      .innerJoin('user_groups.user', 'users')
+      .where('groups.group_id = :groupId AND users.user_id = :userId', {
+        groupId,
+        userId,
+      })
+      .execute();
+  }
+
+  createNewGroup(createGroupDto: CreateGroupDto) {
+    return this.groupRepo.insert(createGroupDto);
+  }
+
+  addUserToGroup(groupId, userId) {}
 }

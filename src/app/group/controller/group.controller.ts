@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -7,6 +8,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { CreateGroupDto } from 'src/common/dto/create-group.dto';
 import { GroupService } from '../service/group.service';
 
 @Controller('groups')
@@ -50,19 +52,32 @@ export class GroupController {
     return this.groupService.getSpecPermissionOfGroup(groupId, permissionId);
   }
 
+  // NOTE not finish
   @Get('/:groupId/users')
   getUsersOfGroup(@Param('groupId') groupId: number) {
     return this.groupService.getUsersOfGroup(groupId);
   }
 
   @Get('/:groupId/users/:userId')
-  getSpecUserOfGroup() {}
+  getSpecUserOfGroup(
+    @Param('groupId') groupId: number,
+    @Param('userId') userId: number,
+  ) {
+    return this.groupService.getSpecUserOfGroup(groupId, userId);
+  }
 
   @Post()
-  createNewGroup() {}
+  createNewGroup(@Body() createGroupDto: CreateGroupDto) {
+    return this.groupService.createNewGroup(createGroupDto);
+  }
 
   @Put('/:groupId/users/:userId')
-  addUserToGroup() {}
+  addUserToGroup(
+    @Param('groupId') groupId: number,
+    @Param('userId') userId: number,
+  ) {
+    return this.groupService.addUserToGroup(groupId, userId);
+  }
 
   @Put('/:groupId/roles/:roleId')
   addRoleToGroup() {}
@@ -71,7 +86,7 @@ export class GroupController {
   addPermissionToGroup() {}
 
   @Patch('/:groupId')
-  updateGroup() {}
+  updateGroupInfo() {}
 
   @Patch('/:groupId/roles')
   updateRolesOfGroup() {}

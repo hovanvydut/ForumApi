@@ -65,7 +65,7 @@ export class UserService {
     if (result.identifiers.length > 0)
       await this.userGroupService.assignUserOfGroup(
         result.identifiers[0].user_id,
-        GroupList.REGISTERED_USERS,
+        { group_code: GroupList.REGISTERED_USERS },
       );
     else throw new InternalServerErrorException();
   }

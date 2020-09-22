@@ -4,8 +4,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { GroupEntity } from 'src/app/group/entity/group.entity';
 import { GroupService } from 'src/app/group/service/group.service';
-import { GroupErrorMsg } from 'src/common/enums/error-message.enum';
+import {
+  GroupErrorMsg,
+  UserErrorMsg,
+} from 'src/common/enums/error-message.enum';
+import { FindConditions } from 'typeorm';
 import { UserEntity } from '../entity/user.entity';
 import { UserGroupRepository } from '../repository/user-group.repository';
 import { UserService } from './user.service';
@@ -19,11 +24,16 @@ export class UserGroupService {
     private readonly userService: UserService,
   ) {}
 
-  async assignUserOfGroup(userId: number, groupCode: string) {
-    const group = await this.groupService.findOne({ group_code: groupCode });
+  async assignUserOfGroup(
+    userId: number,
+    credentials: FindConditions<GroupEntity>,
+  ) {
+    const group = await this.groupService.findOne(credentials);
     const user = await this.userService.findOne({ user_id: userId });
     if (!group)
       throw new NotFoundException({ message: GroupErrorMsg.GROUP_NOT_FOUND });
+    if (!user)
+      throw new NotFoundException({ message: UserErrorMsg.USER_NOT_FOUND });
     return this.userGroupRepo.insert({ group, user });
   }
 }

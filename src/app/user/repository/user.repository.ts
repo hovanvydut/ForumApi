@@ -20,6 +20,7 @@ export class UserRepository extends Repository<UserEntity> {
       .leftJoin('role_permissions.permission', 'permissions')
       .where('user.user_id = :userId', { userId })
       .getRawMany();
+
     const raw2 = await this.createQueryBuilder('user')
       .select('permissions.permission_code AS permission_code_1')
       .addSelect('permissions_2.permission_code AS permission_code_2')
