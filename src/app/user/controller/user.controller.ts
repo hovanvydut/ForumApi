@@ -33,7 +33,9 @@ export class UserController {
 
   @Auth(PermissionList.read_user_any)
   @Get('/:userId/groups')
-  getGroupsOfUser() {}
+  getGroupsOfUser(@Param('userId') userId: number) {
+    return this.userService.getGroupsOfUser(userId);
+  }
 
   @Auth(PermissionList.read_user_any)
   @Get('/:userId/groups/:groupId')

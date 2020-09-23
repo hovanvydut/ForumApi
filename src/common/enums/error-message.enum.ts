@@ -11,3 +11,7 @@ export enum UserErrorMsg {
 export enum GroupErrorMsg {
   GROUP_NOT_FOUND = 'Group is not found',
 }
+
+export enum PermissionErrorMsg {
+  PERMISSION_NOT_FOUND = 'Permission is not found',
+}

@@ -1,4 +1,4 @@
-import { GroupEntity } from './../../group/entity/group.entity';
+import { GroupEntity } from './group.entity';
 import {
   Column,
   Entity,
@@ -6,17 +6,17 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from './user.entity';
+import { UserEntity } from '../../user/entity/user.entity';
 
-@Entity({ name: 'user_groups' })
-export class UserGroupEntity {
+@Entity({ name: 'group_users' })
+export class GroupUserEntity {
   @PrimaryGeneratedColumn()
-  user_group_id: number;
+  group_user_id: number;
 
   // FIXME why cascade: true is not working
   @ManyToOne(
     type => UserEntity,
-    user => user.userGroups,
+    user => user.groupUsers,
     {
       onDelete: 'CASCADE',
     },
@@ -26,7 +26,7 @@ export class UserGroupEntity {
 
   @ManyToOne(
     type => GroupEntity,
-    group => group.userGroups,
+    group => group.groupUsers,
   )
   @JoinColumn({ name: 'group_id' })
   group: GroupEntity;

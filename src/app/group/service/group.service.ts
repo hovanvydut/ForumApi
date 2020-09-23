@@ -1,8 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { PermissionService } from 'src/app/permission/service/permission.service';
+import { UserEntity } from 'src/app/user/entity/user.entity';
 import { CreateGroupDto } from 'src/common/dto/create-group.dto';
+import {
+  GroupErrorMsg,
+  PermissionErrorMsg,
+} from 'src/common/enums/error-message.enum';
 import { FindConditions } from 'typeorm';
 import { GroupEntity } from '../entity/group.entity';
 import { GroupRoleRepository } from '../repository/group-role.repository';
+import { GroupUserRepository } from '../repository/group-user.repository';
 import { GroupRepository } from '../repository/group.repository';
 
 @Injectable()
@@ -10,6 +21,8 @@ export class GroupService {
   constructor(
     private readonly groupRepo: GroupRepository,
     private readonly groupRoleRepo: GroupRoleRepository,
+    private readonly groupUserRepo: GroupUserRepository,
+    private readonly permissionService: PermissionService,
   ) {}
 
   findOne(conditions: FindConditions<GroupEntity>) {
@@ -23,7 +36,7 @@ export class GroupService {
   getSpecificGroup(groupId: number) {
     return this.groupRepo.findOne(
       { group_id: groupId },
-      { relations: ['userGroups', 'groupRoles'] },
+      { relations: ['groupUsers', 'groupRoles'] },
     );
   }
 
@@ -91,8 +104,8 @@ export class GroupService {
     return this.groupRepo
       .createQueryBuilder('groups')
       .select(['users.*'])
-      .innerJoin('groups.userGroups', 'user_groups')
-      .innerJoin('user_groups.user', 'users')
+      .innerJoin('groups.groupUsers', 'group_users')
+      .innerJoin('group_users.user', 'users')
       .where('groups.group_id = :groupId', { groupId })
       .execute();
   }
@@ -101,8 +114,8 @@ export class GroupService {
     return this.groupRepo
       .createQueryBuilder('groups')
       .select(['users.*'])
-      .innerJoin('groups.userGroups', 'user_groups')
-      .innerJoin('user_groups.user', 'users')
+      .innerJoin('groups.groupUsers', 'group_users')
+      .innerJoin('group_users.user', 'users')
       .where('groups.group_id = :groupId AND users.user_id = :userId', {
         groupId,
         userId,
@@ -114,5 +127,38 @@ export class GroupService {
     return this.groupRepo.insert(createGroupDto);
   }
 
-  addUserToGroup(groupId, userId) {}
+  // FIXME error when write-> groupId:number, userId: number
+  async addUserToGroup(groupId, userId) {
+    return this.groupUserRepo.insert({ user: userId, group: groupId });
+  }
+
+  async assignUserOfGroup(
+    userEntity: UserEntity,
+    credentials: FindConditions<GroupEntity>,
+  ) {
+    const groupEntity = await this.findOne(credentials);
+    if (!groupEntity)
+      throw new NotFoundException({ message: GroupErrorMsg.GROUP_NOT_FOUND });
+
+    return this.groupUserRepo.insert({ group: groupEntity, user: userEntity });
+  }
+
+  async addPermissionToGroup(
+    groupId: number,
+    permissionId: number,
+    is_active: number,
+  ) {
+    const group = await this.findOne({ group_id: groupId });
+    const permission = await this.permissionService.findOne({
+      permission_id: permissionId,
+    });
+
+    if (!group)
+      throw new ConflictException({ message: GroupErrorMsg.GROUP_NOT_FOUND });
+    if (!permission)
+      throw new ConflictException({
+        message: PermissionErrorMsg.PERMISSION_NOT_FOUND,
+      });
+    return this.groupRoleRepo.insert({ group, permission, is_active });
+  }
 }

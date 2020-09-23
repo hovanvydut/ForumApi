@@ -7,7 +7,7 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import { UserGroupEntity } from './user-group.entity';
+import { GroupUserEntity } from '../../group/entity/group-user.entity';
 import { UserPermissionEntity } from './user-permission.entity';
 
 @Entity({ name: 'users' })
@@ -25,10 +25,10 @@ export class UserEntity {
   password: string;
 
   @OneToMany(
-    type => UserGroupEntity,
+    type => GroupUserEntity,
     userGroup => userGroup.user,
   )
-  userGroups: UserGroupEntity[];
+  groupUsers: GroupUserEntity[];
 
   @OneToMany(
     type => UserPermissionEntity,

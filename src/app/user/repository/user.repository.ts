@@ -26,8 +26,8 @@ export class UserRepository extends Repository<UserEntity> {
       .addSelect('permissions_2.permission_code AS permission_code_2')
       .addSelect('role_permissions.is_active AS is_active_1')
       .addSelect('group_roles.is_active AS is_active_2')
-      .leftJoin('user.userGroups', 'user_groups')
-      .leftJoin('user_groups.group', 'groups')
+      .leftJoin('user.groupUsers', 'group_users')
+      .leftJoin('group_users.group', 'groups')
       .leftJoin('groups.groupRoles', 'group_roles')
       .leftJoin('group_roles.role', 'roles')
       .leftJoin(

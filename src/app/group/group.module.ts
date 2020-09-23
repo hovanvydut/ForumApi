@@ -4,15 +4,17 @@ import { GroupRepository } from './repository/group.repository';
 import { GroupService } from './service/group.service';
 import { GroupController } from './controller/group.controller';
 import { GroupRoleRepository } from './repository/group-role.repository';
-import { UserModule } from '../user/user.module';
+import { GroupUserRepository } from './repository/group-user.repository';
+import { PermissionModule } from '../permission/permission.module';
 
-const repositories = [GroupRepository, GroupRoleRepository];
+const repositories = [
+  GroupRepository,
+  GroupRoleRepository,
+  GroupUserRepository,
+];
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature(repositories),
-    forwardRef(() => UserModule),
-  ],
+  imports: [TypeOrmModule.forFeature(repositories), PermissionModule],
   providers: [GroupService],
   exports: [GroupService],
   controllers: [GroupController],

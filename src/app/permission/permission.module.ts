@@ -6,7 +6,7 @@ import { PermissionRepository } from './repository/permission.repository';
 import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PermissionRepository]), UserModule],
+  imports: [TypeOrmModule.forFeature([PermissionRepository])],
   controllers: [PermissionController],
   providers: [PermissionService],
   exports: [PermissionService],

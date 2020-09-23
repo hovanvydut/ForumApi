@@ -1,4 +1,4 @@
-import { UserGroupEntity } from './../../user/entity/user-group.entity';
+import { GroupUserEntity } from './group-user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { GroupRoleEntity } from './group-role.entity';
 
@@ -17,10 +17,10 @@ export class GroupEntity {
   group_description: string;
 
   @OneToMany(
-    type => UserGroupEntity,
+    type => GroupUserEntity,
     userGroup => userGroup.group,
   )
-  userGroups: UserGroupEntity[];
+  groupUsers: GroupUserEntity[];
 
   @OneToMany(
     type => GroupRoleEntity,

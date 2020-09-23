@@ -3,23 +3,21 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { GroupService } from 'src/app/group/service/group.service';
 import { CreateUserDto } from 'src/common/dto/create-user.dto';
 import { UserErrorMsg } from 'src/common/enums/error-message.enum';
-import { isActiveList } from 'src/common/enums/is-active.enum';
 import { GroupList } from 'src/common/list/group.list';
 import { BcryptUtil } from 'src/shared/bcrypt.util';
 import { FindConditions } from 'typeorm';
-import { UserGroupEntity } from '../entity/user-group.entity';
 import { UserEntity } from '../entity/user.entity';
 import { UserRepository } from '../repository/user.repository';
-import { UserGroupService } from './user-group.service';
 
 @Injectable()
 export class UserService {
   private readonly bcryptUtil = BcryptUtil.getInstance();
   constructor(
     private readonly userRepo: UserRepository,
-    private readonly userGroupService: UserGroupService,
+    private readonly groupService: GroupService,
   ) {}
 
   findOne(conditions: FindConditions<UserEntity>): Promise<UserEntity | null> {
@@ -50,6 +48,16 @@ export class UserService {
     return this.userRepo.softRemove({ user_id: userId });
   }
 
+  getGroupsOfUser(userId: number) {
+    return this.userRepo
+      .createQueryBuilder('users')
+      .select(['groups.*'])
+      .innerJoin('users.groupUsers', 'group_users')
+      .innerJoin('group_users.group', 'groups')
+      .where('users.user_id = :userId', { userId })
+      .execute();
+  }
+
   async createNewUser(createUserDto: CreateUserDto) {
     if (await this.findOne({ email: createUserDto.email }))
       throw new ConflictException({ message: UserErrorMsg.EMAIL_EXIST });
@@ -60,13 +68,14 @@ export class UserService {
     );
 
     const result = await this.userRepo.insert(createUserDto);
-
+    const userEntity = await this.userRepo.findOne({
+      user_id: result.identifiers[0].user_id,
+    });
     // if inserting success, assign default-group to user
     if (result.identifiers.length > 0)
-      await this.userGroupService.assignUserOfGroup(
-        result.identifiers[0].user_id,
-        { group_code: GroupList.REGISTERED_USERS },
-      );
+      await this.groupService.assignUserOfGroup(userEntity, {
+        group_code: GroupList.REGISTERED_USERS,
+      });
     else throw new InternalServerErrorException();
   }
 

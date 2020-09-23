@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePermissionDto } from 'src/common/dto/create-permission.dto';
 import { UpdateDescriptionPermisisonDto } from 'src/common/dto/update-description-permission.dto';
+import { FindConditions } from 'typeorm';
 import { PermissionEntity } from '../entity/permission.entity';
 import { PermissionRepository } from '../repository/permission.repository';
 
 @Injectable()
 export class PermissionService {
   constructor(private readonly permissionRepo: PermissionRepository) {}
+
+  findOne(conditions: FindConditions<PermissionEntity>) {
+    return this.permissionRepo.findOne(conditions);
+  }
 
   getAllPermission(): Promise<PermissionEntity[]> {
     return this.permissionRepo.find();

@@ -72,7 +72,7 @@ export class GroupController {
   }
 
   @Put('/:groupId/users/:userId')
-  addUserToGroup(
+  assignUserOfGroup(
     @Param('groupId') groupId: number,
     @Param('userId') userId: number,
   ) {
@@ -80,10 +80,23 @@ export class GroupController {
   }
 
   @Put('/:groupId/roles/:roleId')
-  addRoleToGroup() {}
+  addRoleToGroup(@Param('groupId') groupId: number, @Param('roleId') roleId) {
+    // return this.groupService.addRoleToGroup(groupId, roleId);
+  }
 
+  // FIXME use isActiveList: IsActiveList instead
   @Put('/:groupId/permissions/:permisisonId')
-  addPermissionToGroup() {}
+  addPermissionToGroup(
+    @Param('groupId') groupId,
+    @Param('permissionId') permissionId,
+    @Body('is_active') is_active: number,
+  ) {
+    return this.groupService.addPermissionToGroup(
+      groupId,
+      permissionId,
+      is_active,
+    );
+  }
 
   @Patch('/:groupId')
   updateGroupInfo() {}
