@@ -6,6 +6,7 @@ import { GroupController } from './controller/group.controller';
 import { GroupRoleRepository } from './repository/group-role.repository';
 import { GroupUserRepository } from './repository/group-user.repository';
 import { PermissionModule } from '../permission/permission.module';
+import { AuthModule } from '../auth/auth.module';
 
 const repositories = [
   GroupRepository,
@@ -14,7 +15,11 @@ const repositories = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature(repositories), PermissionModule],
+  imports: [
+    TypeOrmModule.forFeature(repositories),
+    PermissionModule,
+    forwardRef(() => AuthModule),
+  ],
   providers: [GroupService],
   exports: [GroupService],
   controllers: [GroupController],

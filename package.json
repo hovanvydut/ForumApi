@@ -35,7 +35,9 @@
     "bcrypt": "^5.0.0",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
+    "cloudinary": "^1.23.0",
     "compression": "^1.7.4",
+    "datauri": "^3.0.0",
     "dotenv": "^8.2.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
@@ -44,6 +46,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
+    "slugify": "^1.4.5",
     "typeorm": "^0.2.25"
   },
   "devDependencies": {

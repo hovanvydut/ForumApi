@@ -8,7 +8,10 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { Auth } from 'src/common/decorators/auth.decorator';
 import { CreateGroupDto } from 'src/common/dto/create-group.dto';
+import { UpdateGroupInfoDto } from 'src/common/dto/update-group-info.dto';
+import { PermissionList } from 'src/common/list/permission.list';
 import { GroupService } from '../service/group.service';
 
 @Controller('groups')
@@ -39,6 +42,7 @@ export class GroupController {
     return this.groupService.getSpecificRoleOfGroup(groupId, roleId);
   }
 
+  // FIXME ERROR
   @Get('/:groupId/permissions')
   getPermissionsOfGroup(@Param('groupId') groupId: number) {
     return this.groupService.getPermissionsOfGroup(groupId);
@@ -81,11 +85,11 @@ export class GroupController {
 
   @Put('/:groupId/roles/:roleId')
   addRoleToGroup(@Param('groupId') groupId: number, @Param('roleId') roleId) {
-    // return this.groupService.addRoleToGroup(groupId, roleId);
+    return this.groupService.addRoleToGroup(groupId, roleId);
   }
 
   // FIXME use isActiveList: IsActiveList instead
-  @Put('/:groupId/permissions/:permisisonId')
+  @Put('/:groupId/permissions/:permissionId')
   addPermissionToGroup(
     @Param('groupId') groupId,
     @Param('permissionId') permissionId,
@@ -99,23 +103,47 @@ export class GroupController {
   }
 
   @Patch('/:groupId')
-  updateGroupInfo() {}
+  updateGroupInfo(
+    @Param('groupId') groupId: number,
+    @Body() updateGroupInfoDto: UpdateGroupInfoDto,
+  ) {
+    return this.groupService.updateGroupInfo(groupId, updateGroupInfoDto);
+  }
 
-  @Patch('/:groupId/roles')
-  updateRolesOfGroup() {}
-
-  @Patch('/:groupId/permissions')
-  updatePermissionsOfGroup() {}
+  // FIXME use isActiveList: IsActiveList instead
+  @Patch('/:groupId/permissions/:permissionId')
+  updatePermissionsOfGroup(
+    @Param('groupId') groupId,
+    @Param('permissionId') permissionId,
+    @Body('is_active') is_active: number,
+  ) {
+    return this.groupService.updatePermissionsOfGroup(
+      groupId,
+      permissionId,
+      is_active,
+    );
+  }
 
   @Delete('/:groupId')
   deleteGroupUserDefined() {}
 
+  @Auth(PermissionList.delete_user_group)
   @Delete('/:groupId/users/:userId')
-  removeUserFromGroup() {}
+  removeUserFromGroup(
+    @Param('groupId') groupId: number,
+    @Param('userId') userId: number,
+  ) {
+    return this.groupService.removeUserFromGroup(groupId, userId);
+  }
 
   @Delete('/:groupId/permissions/:permissionId')
   removePermissionFromGroup() {}
 
   @Delete('/:groupId/roles/:roleId')
-  removeRoleFromGroup() {}
+  removeRoleFromGroup(
+    @Param('groupId') groupId: number,
+    @Param('roleId') roleId: number,
+  ) {
+    return this.groupService.removeRoleFromGroup(groupId, roleId);
+  }
 }

@@ -10,6 +10,7 @@ export enum UserErrorMsg {
 
 export enum GroupErrorMsg {
   GROUP_NOT_FOUND = 'Group is not found',
+  ROLE_NOT_IN_GROUP = "This group doesn't contain role or this group doesn't exist",
 }
 
 export enum PermissionErrorMsg {

@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { JwtModuleOptions } from '@nestjs/jwt';
+import { ConfigOptions } from 'cloudinary';
 require('dotenv').config();
 
 const setting = {
@@ -20,12 +21,12 @@ const setting = {
     secret: process.env.JWT_SECRET_KEY || 'hovanvydut@gmail.com',
     expires: process.env.JWT_EXPIRATION_TIME || '5184000s',
   },
+  cloudinary: {
+    cloud_name: process.env.CLOUDIANRY_NAME,
+    api_key: process.env.CLOUDIANRY_API_KEY,
+    api_secret: process.env.CLOUDIANRY_API_SECRET,
+  },
 };
-
-interface JwtConfig {
-  secret: string;
-  expires: string | number;
-}
 
 export class Config {
   private setting = setting;
@@ -76,5 +77,9 @@ export class Config {
         expiresIn: jwtConfig.expires,
       },
     };
+  }
+
+  getCloudinaryConfig(): Partial<ConfigOptions> {
+    return this.setting.cloudinary;
   }
 }

@@ -1,16 +1,23 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserService } from 'src/app/user/service/user.service';
 import { HelperUtil } from 'src/shared/helper.util';
-import { isActiveList } from '../enums/is-active.enum';
-import { PermissionList } from '../list/permission.list';
+import { isActiveList } from '../../../common/enums/is-active.enum';
+import { PermissionList } from '../../../common/list/permission.list';
 
 const helperUtil = HelperUtil.getInstance();
 
 @Injectable()
-export class PermissionAuthGuard implements CanActivate {
+export class AuthPermissionGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
+    // @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
   ) {}
 

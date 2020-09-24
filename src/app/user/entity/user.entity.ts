@@ -1,3 +1,4 @@
+import { IdeaEntity } from 'src/app/idea/entity/idea.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -36,12 +37,18 @@ export class UserEntity {
   )
   userPermissions: UserPermissionEntity[];
 
+  @OneToMany(
+    type => IdeaEntity,
+    ideas => ideas.author,
+  )
+  ideas: IdeaEntity[];
+
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  udpatedAt: Date;
+  updated_at: Date;
 
   @DeleteDateColumn()
-  deletedAt: Date;
+  deleted_at: Date;
 }
