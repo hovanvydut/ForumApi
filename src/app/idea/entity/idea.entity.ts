@@ -1,3 +1,5 @@
+import { CommentEntity } from 'src/app/comment/entity/comment.entity';
+import { MediaEntity } from 'src/app/media/entity/media.entity';
 import { UserEntity } from 'src/app/user/entity/user.entity';
 import { isPublishedConstant } from 'src/common/enums/is-published.enum';
 import {
@@ -7,11 +9,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'ideas' })
+@Entity({ name: 'idea' })
 export class IdeaEntity {
   @PrimaryGeneratedColumn()
   idea_id: number;
@@ -24,7 +27,7 @@ export class IdeaEntity {
 
   @ManyToOne(
     type => UserEntity,
-    author => author.ideas,
+    author => author.idea,
     { eager: true },
   )
   @JoinColumn({ name: 'author_id' })
@@ -38,6 +41,18 @@ export class IdeaEntity {
 
   @Column({ default: isPublishedConstant.NO })
   is_published: number;
+
+  @OneToMany(
+    type => MediaEntity,
+    media => media.idea,
+  )
+  media: MediaEntity[];
+
+  @OneToMany(
+    type => CommentEntity,
+    comments => comments.idea,
+  )
+  comments: CommentEntity[];
 
   @CreateDateColumn()
   created_at: Date;

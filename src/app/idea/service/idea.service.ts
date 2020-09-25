@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { MediaService } from 'src/app/media/service/media.service';
 import { CreateIdeaDto } from 'src/common/dto/create-idea.dto';
 import { UpdateIdeaDto } from 'src/common/dto/update-idea.dto';
 import { SlugifyUtil } from 'src/shared/slugify.util';
@@ -9,7 +10,10 @@ import { IdeaRepository } from '../repository/idea.repository';
 export class IdeaService {
   private slugifyUtil: SlugifyUtil;
 
-  constructor(private readonly ideaRepo: IdeaRepository) {
+  constructor(
+    private readonly ideaRepo: IdeaRepository,
+    private readonly mediaService: MediaService,
+  ) {
     this.slugifyUtil = SlugifyUtil.getInstance();
   }
 
@@ -33,7 +37,6 @@ export class IdeaService {
   }
 
   updateIdea(ideaId: number, updateIdeaDto: UpdateIdeaDto) {
-    console.log(updateIdeaDto);
     return this.ideaRepo.update({ idea_id: ideaId }, updateIdeaDto);
   }
 
@@ -47,5 +50,23 @@ export class IdeaService {
 
   deleteIdea(ideaId: number) {
     return this.ideaRepo.delete({ idea_id: ideaId });
+  }
+
+  getAllMedia(ideaId: number) {
+    return this.ideaRepo
+      .createQueryBuilder('idea')
+      .select(['media.*'])
+      .innerJoin('idea.media', 'media')
+      .where('idea.idea_id = :ideaId', { ideaId })
+      .execute();
+  }
+
+  uploadFile(file, ideaId: number) {
+    return this.mediaService.uploadFile(file, ideaId);
+  }
+
+  async deleteMediaOfIdea(ideaId: number, mediaId: number) {
+    const idea = await this.ideaRepo.findOne({ idea_id: ideaId });
+    return this.mediaService.deleteMedia(idea, mediaId);
   }
 }

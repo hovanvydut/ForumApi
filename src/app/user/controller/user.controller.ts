@@ -70,4 +70,6 @@ export class UserController {
   deleteUser(@Param('userId') userId: number) {
     return this.userService.deleteUser(userId);
   }
+
+  // NOTE block comment user ....
 }

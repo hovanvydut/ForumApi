@@ -10,26 +10,24 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'media' })
-export class MediaEntity {
+@Entity({ name: 'comments' })
+export class CommentEntity {
   @PrimaryGeneratedColumn()
-  media_id: number;
+  comment_id: number;
 
   @Column()
-  media_type: string;
-
-  @Column()
-  media_src: string;
-
-  @Column({ nullable: true })
-  media_description: string;
+  comment_content: string;
 
   @ManyToOne(
     type => IdeaEntity,
-    idea => idea.media,
+    idea => idea.comments,
   )
   @JoinColumn({ name: 'idea_id' })
   idea: IdeaEntity;
+
+  @ManyToOne(type => CommentEntity)
+  @JoinColumn({ name: 'reply_comment_id' })
+  reply_comment: CommentEntity;
 
   @CreateDateColumn()
   created_at: Date;

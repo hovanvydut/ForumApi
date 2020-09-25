@@ -41,7 +41,7 @@ export class UserEntity {
     type => IdeaEntity,
     ideas => ideas.author,
   )
-  ideas: IdeaEntity[];
+  idea: IdeaEntity[];
 
   @CreateDateColumn()
   created_at: Date;

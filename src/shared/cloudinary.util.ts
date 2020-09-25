@@ -19,7 +19,7 @@ export class CloudinaryUtil {
     return CloudinaryUtil.instance;
   }
 
-  async uploadFile(file) {
+  async uploadFile(file): Promise<string> {
     const url = dataUriParser.format(
       '.' + path.extname(file.originalname).toString(),
       file.buffer,
