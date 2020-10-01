@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Auth } from 'src/common/decorators/auth.decorator';
+import { CreateCommentDto } from 'src/common/dto/create-comment.dto';
 import { CreateIdeaDto } from 'src/common/dto/create-idea.dto';
 import { IsPublishedDto } from 'src/common/dto/is-published.dto';
 import { UpdateIdeaDto } from 'src/common/dto/update-idea.dto';
@@ -44,6 +45,7 @@ export class IdeaController {
     return this.ideaService.updateIdea(ideaId, updateIdeaDto);
   }
 
+  // FIXME
   @Patch('/:ideadId/publish')
   publishIdea(@Body() isPublishedDto: IsPublishedDto) {
     console.log(isPublishedDto);
@@ -70,13 +72,6 @@ export class IdeaController {
     return this.ideaService.getAllMedia(ideaId);
   }
 
-  @Post('/:ideaId/media/upload')
-  @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file, @Param('ideaId') ideaId: number) {
-    // FIXME add case: user input string
-    return this.ideaService.uploadFile(file, ideaId);
-  }
-
   @Delete('/:ideaId/media/:mediaId')
   deleteMediaOfIdea(
     @Param('ideaId') ideaId: number,
@@ -86,17 +81,42 @@ export class IdeaController {
   }
 
   @Get('/:ideaId/comments')
-  getCommentsOfIdea() {}
+  getCommentsOfIdea(@Param('ideaId') ideaId) {
+    return this.ideaService.getCommentsOfIdea(ideaId);
+  }
 
   @Post('/:ideaId/comments')
-  commentInIdea() {}
+  commentInIdea(
+    @Param('ideaId') ideaId: number,
+    @Body() createCommentDto: CreateCommentDto,
+  ) {
+    console.log(createCommentDto);
+    return this.ideaService.commentInIdea(ideaId, createCommentDto);
+  }
+
+  @Post('/:ideaId/comments/:commentId/reply')
+  replyComment(
+    @Param('ideaId') ideaId: number,
+    @Param('commentId') commentId: number,
+    @Body() createCommentDto: CreateCommentDto,
+  ) {
+    return this.ideaService.replyComment(ideaId, commentId, createCommentDto);
+  }
 
   @Patch('/:ideaId/comments/:commentId')
-  updateCommentOfIdea() {}
+  updateCommentOfIdea(
+    @Param('ideaId') ideaId: number,
+    @Param('commentId') commentId: number,
+  ) {}
 
   @Delete('/:ideaId/comments/:commentId')
-  deleteCommentOfIdea() {}
+  deleteCommentOfIdea(
+    @Param('ideaId') ideaId: number,
+    @Param('commentId') commentId: number,
+  ) {
+    return this.ideaService.deleteCommentOfIdea(ideaId, commentId);
+  }
 
-  @Patch('/:ideaId/comments/:commentId/publish')
-  publishCommentOfIdea() {}
+  // @Patch('/:ideaId/comments/:commentId/publish')
+  // publishCommentOfIdea() {}
 }

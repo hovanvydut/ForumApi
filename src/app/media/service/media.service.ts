@@ -11,17 +11,12 @@ export class MediaService {
     this.cloudinaryUtil = CloudinaryUtil.getInstance();
   }
 
-  async uploadFile(file, ideaId: number) {
+  async uploadFile(file) {
     const src = await this.cloudinaryUtil.uploadFile(file);
-    const raw = await this.mediaRepo.insert({
+    return this.mediaRepo.insert({
       media_src: src,
       media_type: 'image',
     });
-    return this.mediaRepo
-      .createQueryBuilder()
-      .relation(MediaEntity, 'idea')
-      .of(raw.identifiers[0].media_id)
-      .set(ideaId);
   }
 
   deleteMedia(idea: IdeaEntity, mediaId: number) {

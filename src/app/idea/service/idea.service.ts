@@ -1,7 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { create } from 'domain';
+import { CommentService } from 'src/app/comment/service/comment.service';
 import { MediaService } from 'src/app/media/service/media.service';
+import { CreateCommentDto } from 'src/common/dto/create-comment.dto';
 import { CreateIdeaDto } from 'src/common/dto/create-idea.dto';
 import { UpdateIdeaDto } from 'src/common/dto/update-idea.dto';
+import { IdeaErrorMsg } from 'src/common/enums/error-message.enum';
 import { SlugifyUtil } from 'src/shared/slugify.util';
 import { IdeaEntity } from '../entity/idea.entity';
 import { IdeaRepository } from '../repository/idea.repository';
@@ -13,6 +17,7 @@ export class IdeaService {
   constructor(
     private readonly ideaRepo: IdeaRepository,
     private readonly mediaService: MediaService,
+    private readonly commentService: CommentService,
   ) {
     this.slugifyUtil = SlugifyUtil.getInstance();
   }
@@ -37,6 +42,8 @@ export class IdeaService {
   }
 
   updateIdea(ideaId: number, updateIdeaDto: UpdateIdeaDto) {
+    // find ideaId xem ton tai khong
+    // check thu may cai field co thay doi khong, co thay doi => update
     return this.ideaRepo.update({ idea_id: ideaId }, updateIdeaDto);
   }
 
@@ -61,12 +68,43 @@ export class IdeaService {
       .execute();
   }
 
-  uploadFile(file, ideaId: number) {
-    return this.mediaService.uploadFile(file, ideaId);
-  }
-
   async deleteMediaOfIdea(ideaId: number, mediaId: number) {
     const idea = await this.ideaRepo.findOne({ idea_id: ideaId });
     return this.mediaService.deleteMedia(idea, mediaId);
+  }
+
+  async getCommentsOfIdea(ideaId: number) {
+    const idea = await this.ideaRepo.findOne({ idea_id: ideaId });
+    if (!idea)
+      throw new ConflictException({ message: IdeaErrorMsg.IDEA_NOT_FOUND });
+    return this.commentService.getCommentsOfIdea(idea);
+  }
+
+  async commentInIdea(ideaId: number, createCommentDto: CreateCommentDto) {
+    const idea = await this.ideaRepo.findOne({ idea_id: ideaId });
+    if (!idea)
+      throw new ConflictException({ message: IdeaErrorMsg.IDEA_NOT_FOUND });
+
+    return this.commentService.commentInIdea(idea, createCommentDto);
+  }
+
+  async replyComment(
+    ideaId: number,
+    commentId: number,
+    createCommentDto: CreateCommentDto,
+  ) {
+    const idea = await this.ideaRepo.findOne({ idea_id: ideaId });
+    if (!idea)
+      throw new ConflictException({ message: IdeaErrorMsg.IDEA_NOT_FOUND });
+
+    return this.commentService.replyComment(idea, commentId, createCommentDto);
+  }
+
+  async deleteCommentOfIdea(ideaId: number, commentId: number) {
+    const idea = await this.ideaRepo.findOne({ idea_id: ideaId });
+    if (!idea)
+      throw new ConflictException({ message: IdeaErrorMsg.IDEA_NOT_FOUND });
+
+    return this.commentService.deleteComment(idea, commentId);
   }
 }

@@ -4,11 +4,13 @@ import { PermissionController } from './controller/permission.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PermissionRepository } from './repository/permission.repository';
 import { UserModule } from '../user/user.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([PermissionRepository]),
     forwardRef(() => UserModule),
+    // AuthModule,
   ],
   controllers: [PermissionController],
   providers: [PermissionService],

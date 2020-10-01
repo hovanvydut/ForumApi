@@ -1,3 +1,4 @@
+import { CommentEntity } from 'src/app/comment/entity/comment.entity';
 import { IdeaEntity } from 'src/app/idea/entity/idea.entity';
 import {
   Entity,
@@ -24,6 +25,12 @@ export class UserEntity {
 
   @Column()
   password: string;
+
+  @OneToMany(
+    type => CommentEntity,
+    comments => comments.owner,
+  )
+  comments: CommentEntity;
 
   @OneToMany(
     type => GroupUserEntity,
