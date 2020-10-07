@@ -33,10 +33,11 @@ export class AuthPermissionGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const reqUser: IReqUser = request.user;
     const raws = await this.userService.getAllPermission(reqUser.user_id);
+    const blockPermission = [];
     const userPermissions = raws
       .map(item => {
         if (
-          item.permission_code_2 === PermissionList.FULL &&
+          item.permission_code_1 === PermissionList.FULL ||
           item.permission_code_2 == PermissionList.FULL
         ) {
           isSuperAdmin = true;
@@ -46,11 +47,26 @@ export class AuthPermissionGuard implements CanActivate {
           return item.permission_code_1;
         if (item.is_active_2 == isActiveList.YES && item.permission_code_2)
           return item.permission_code_2;
+
+        if (item.is_active_1 == isActiveList.NEVER && item.permission_code_1) {
+          blockPermission.push(item.permission_code_1);
+        }
+        if (item.is_active_2 == isActiveList.NEVER && item.permission_code_2) {
+          blockPermission.push(item.permission_code_2);
+        }
       })
       .filter(item => item);
 
+    for (let i = 0; i < blockPermission.length; i++) {
+      const idx = userPermissions.findIndex(
+        value => value == blockPermission[i],
+      );
+      if (idx > -1) {
+        userPermissions.splice(idx, 1);
+      }
+    }
+
     // LOG
-    console.log(raws);
     console.log(userPermissions);
 
     if (isSuperAdmin) return true;

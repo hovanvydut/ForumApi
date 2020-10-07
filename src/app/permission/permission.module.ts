@@ -10,7 +10,6 @@ import { AuthModule } from '../auth/auth.module';
   imports: [
     TypeOrmModule.forFeature([PermissionRepository]),
     forwardRef(() => UserModule),
-    // AuthModule,
   ],
   controllers: [PermissionController],
   providers: [PermissionService],

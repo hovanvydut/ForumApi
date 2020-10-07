@@ -22,6 +22,7 @@ import { IdeaService } from '../service/idea.service';
 export class IdeaController {
   constructor(private readonly ideaService: IdeaService) {}
 
+  @Auth(PermissionList.read_group_any)
   @Get()
   getAllIdeas() {
     return this.ideaService.getAllIdeas();

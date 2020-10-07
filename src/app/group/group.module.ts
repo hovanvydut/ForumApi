@@ -18,6 +18,7 @@ const repositories = [
   imports: [
     TypeOrmModule.forFeature(repositories),
     PermissionModule,
+    // AuthModule,
     forwardRef(() => AuthModule),
   ],
   providers: [GroupService],

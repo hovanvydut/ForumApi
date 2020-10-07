@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { CreateUserDto } from 'src/common/dto/create-user.dto';
@@ -19,8 +20,10 @@ export class UserController {
 
   @Auth(PermissionList.read_user_any)
   @Get()
-  getAllUser(): Promise<UserEntity[] | UserEntity> {
-    return this.userService.getAllUser();
+  getAllUser(@Query() query): Promise<UserEntity[] | UserEntity> {
+    // filter, sort, limit, pagination
+    console.log(query);
+    return this.userService.getAllUser(query);
   }
 
   @Auth(PermissionList.read_user_any)
@@ -42,8 +45,9 @@ export class UserController {
   getSpecGroupOfUser() {}
 
   @Auth(PermissionList.read_user_any)
-  @Get('/deleted')
+  @Get('/soft-delete')
   getSoftDeletedUser(): Promise<UserEntity[]> {
+    console.log('here');
     return this.userService.getSoftDeletedUser();
   }
 
