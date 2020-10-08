@@ -26,6 +26,7 @@ export class UserService {
         return this.userRepo.findOne(conditions);
     }
 
+    // api/v1/users?limit=3&sort_by=desc(created_at)&before_id=19&filter[price]=gte(10)&filter[price]=gt(100)
     getAllUser(queryURL): Promise<UserEntity[]> {
         const MAX_LIMIT = 100;
         const after_id = queryURL.after_id || 0;
@@ -33,6 +34,61 @@ export class UserService {
         const limit = queryURL.limit || MAX_LIMIT;
         const queryDict: Map<string, 'ASC' | 'DESC'> = new Map();
 
+        // pagination
+        const query = this.userRepo
+            .createQueryBuilder('user')
+            .select(['user_id', 'fullname', 'email'])
+            .where('user_id > :after_id', { after_id })
+            .limit(limit);
+
+        if (before_id) {
+            query.andWhere('user_id < :before_id', { before_id });
+        }
+
+        // filter: { price: [ 'gte(10)', 'gt(100)' ] }
+        const operatorMap = new Map([
+            ['eq', '='],
+            ['gte', '>='],
+            ['gt', '>'],
+            ['lte', '<='],
+            ['lt', '<'],
+            ['like', 'LIKE'],
+        ]);
+
+        const filter = queryURL.filter;
+        if (filter) {
+            const keys = Object.keys(filter);
+            // check key[i] co thuoc UserEntity
+            keys.forEach(key => {
+                let valuesRaw = filter[key];
+                if (!Array.isArray(valuesRaw)) {
+                    const tmp = valuesRaw;
+                    valuesRaw = [];
+                    valuesRaw.push(tmp);
+                }
+                console.log(valuesRaw);
+                valuesRaw.forEach(valueRaw => {
+                    const valueTmp = /\((.*)\)/.exec(valueRaw);
+                    const operatorTmp = /.*(?=\()/.exec(valueRaw);
+
+                    if (
+                        valueTmp &&
+                        valueTmp[1] &&
+                        operatorTmp &&
+                        operatorTmp[0]
+                    ) {
+                        const value = valueTmp[1];
+                        const operator = operatorTmp[0];
+                        query.andWhere(
+                            `${key} ${operatorMap.get(operator)} :${key}`,
+                            { [key]: value },
+                        );
+                    }
+                });
+            });
+        }
+
+        // sort
         queryURL.sort_by
             .replace(/\s/g, '')
             .split(',')
@@ -49,16 +105,6 @@ export class UserService {
                 }
             });
         console.log(queryDict);
-
-        const query = this.userRepo
-            .createQueryBuilder('user')
-            .select(['user_id', 'fullname', 'email'])
-            .where('user_id > :after_id', { after_id })
-            .limit(limit);
-
-        if (before_id) {
-            query.andWhere('user_id < :before_id', { before_id });
-        }
 
         queryDict.forEach((value, key) => {
             console.log(value, key);
