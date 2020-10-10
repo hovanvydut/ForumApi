@@ -66,7 +66,6 @@ export class UserService {
                     valuesRaw = [];
                     valuesRaw.push(tmp);
                 }
-                console.log(valuesRaw);
                 valuesRaw.forEach(valueRaw => {
                     const valueTmp = /\((.*)\)/.exec(valueRaw);
                     const operatorTmp = /.*(?=\()/.exec(valueRaw);
@@ -89,25 +88,24 @@ export class UserService {
         }
 
         // sort
-        queryURL.sort_by
-            .replace(/\s/g, '')
-            .split(',')
-            .forEach(item => {
-                // 'desc(id),asc(email)' => ['desc(id)', 'asc(email)']
-                // => Map { 'id' => 'DESC', 'email' => 'ASC' }
-                const key = /\((.*)\)/.exec(item);
-                const value = /.*(?=\()/.exec(item);
-                if (key && key[0]) {
-                    queryDict.set(
-                        key[1],
-                        value[0].toUpperCase() as 'ASC' | 'DESC',
-                    );
-                }
-            });
-        console.log(queryDict);
+        if (queryURL.sort_by)
+            queryURL.sort_by
+                .replace(/\s/g, '')
+                .split(',')
+                .forEach(item => {
+                    // 'desc(id),asc(email)' => ['desc(id)', 'asc(email)']
+                    // => Map { 'id' => 'DESC', 'email' => 'ASC' }
+                    const key = /\((.*)\)/.exec(item);
+                    const value = /.*(?=\()/.exec(item);
+                    if (key && key[0]) {
+                        queryDict.set(
+                            key[1],
+                            value[0].toUpperCase() as 'ASC' | 'DESC',
+                        );
+                    }
+                });
 
         queryDict.forEach((value, key) => {
-            console.log(value, key);
             query.orderBy(key, value);
         });
         return query.execute();

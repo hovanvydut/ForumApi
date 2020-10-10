@@ -22,7 +22,6 @@ export class UserController {
     @Get()
     getAllUser(@Query() query): Promise<UserEntity[] | UserEntity> {
         // filter, sort, limit, pagination
-        console.log(query);
         return this.userService.getAllUser(query);
     }
 
